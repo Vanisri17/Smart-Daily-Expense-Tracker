@@ -97,6 +97,7 @@ if __name__ == "__main__":
         print("1. Add Expense")
         print("2. View All Expenses")
         print("3. View Expense Summary")
+        print("4. Category-wise Report")
         print("4. Exit")
 
         choice = input("Enter your choice: ")
@@ -111,8 +112,37 @@ if __name__ == "__main__":
             show_summary()
 
         elif choice == "4":
+            category_report()
+
+        elif choice == "5":
             print("Thank you for using Expense Tracker!")
             break
 
         else:
             print("Invalid choice! Try again.")
+
+
+# Category-wise expense report
+def category_report():
+    totals = {}
+
+    with open(FILE_NAME, "r", newline="") as file:
+        reader = csv.DictReader(file)
+
+        for row in reader:
+            category = row["Category"].strip().title()
+            amount = float(row["Amount"])
+
+            if category in totals:
+                totals[category] += amount
+            else:
+                totals[category] = amount
+
+    print("\n----- Category-wise Expenses -----")
+
+    if not totals:
+        print("No expenses found!")
+        return
+
+    for category, amount in totals.items():
+        print(category, ": Rs.", round(amount, 2))
