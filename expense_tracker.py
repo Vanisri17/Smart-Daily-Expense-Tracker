@@ -88,40 +88,6 @@ def show_summary():
         print("You are within your budget!")
 
 
-# Main menu
-if __name__ == "__main__":
-    create_file()
-
-    while True:
-        print("\n===== Smart Daily Expense Tracker =====")
-        print("1. Add Expense")
-        print("2. View All Expenses")
-        print("3. View Expense Summary")
-        print("4. Category-wise Report")
-        print("4. Exit")
-
-        choice = input("Enter your choice: ")
-
-        if choice == "1":
-            add_expense()
-
-        elif choice == "2":
-            view_expenses()
-
-        elif choice == "3":
-            show_summary()
-
-        elif choice == "4":
-            category_report()
-
-        elif choice == "5":
-            print("Thank you for using Expense Tracker!")
-            break
-
-        else:
-            print("Invalid choice! Try again.")
-
-
 # Category-wise expense report
 def category_report():
     totals = {}
@@ -146,3 +112,74 @@ def category_report():
 
     for category, amount in totals.items():
         print(category, ": Rs.", round(amount, 2))
+
+
+# Monthly expense report
+def monthly_report():
+    month = input("Enter month (YYYY-MM): ")
+    total = 0
+    categories = {}
+
+    with open(FILE_NAME, "r", newline="") as file:
+        reader = csv.DictReader(file)
+
+        for row in reader:
+            if row["Date"].startswith(month):
+                amount = float(row["Amount"])
+                category = row["Category"].strip().title()
+
+                total += amount
+                categories[category] = (
+                    categories.get(category, 0) + amount
+                )
+
+    print("\n----- Monthly Expense Report -----")
+    print("Month:", month)
+    print("Total Expense: Rs.", round(total, 2))
+    print("Monthly Budget: Rs.", BUDGET)
+    print("Remaining Budget: Rs.", round(BUDGET - total, 2))
+
+    print("\nCategory-wise Breakdown:")
+
+    if categories:
+        for category, amount in categories.items():
+            print(category, ": Rs.", round(amount, 2))
+    else:
+        print("No expenses found for this month.")
+
+
+
+# Main menu
+if __name__ == "__main__":
+    create_file()
+
+    while True:
+        print("\n===== Smart Daily Expense Tracker =====")
+        print("1. Add Expense")
+        print("2. View All Expenses")
+        print("3. View Expense Summary")
+        print("4. Category-wise Report")
+        print("5. Monthly Expense Report")
+        print("6. Exit")
+
+        choice = input("Enter your choice: ")
+
+        if choice == "1":
+            add_expense()
+        elif choice == "2":
+            view_expenses()
+        elif choice == "3":
+            show_summary()
+        elif choice == "4":
+            category_report()
+        elif choice == "5":
+            monthly_report()
+        elif choice == "6":
+            print("Thank you for using Expense Tracker!")
+            break
+        else:
+            print("Invalid choice! Try again.")
+
+
+
+
